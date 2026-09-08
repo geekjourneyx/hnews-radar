@@ -49,6 +49,44 @@ This file is the durable contract for every scheduled HNews Radar run.
 
 Sections with no qualifying signal may say so explicitly instead of inventing content.
 
+## Mandatory source-link gate
+
+Every formal signal must be traceable to clickable original sources.
+
+This applies to every item included under:
+
+- 综合强信号
+- 项目与工具雷达
+- 热点讨论与反直觉观点
+- 产品 / 商业 / 产业机会
+- 趋势判断
+- 最值得精读
+- any later-run update that changes a prior conclusion
+
+A qualifying item must include:
+
+```markdown
+- Source: <closest original factual source URL>
+- HN: <news.ycombinator.com/item?id=...>   # when discovered/discussed on HN
+- Evidence:
+  - <supporting or counterevidence URL>
+  - <supporting or counterevidence URL>
+- Evidence type: verified_fact | author_claim | community_evidence | inference | unknown
+```
+
+Rules:
+
+1. **No original URL = no formal signal.** If an original source cannot be recovered, downgrade the item to `unknown / 待验证`.
+2. `Source` should be the closest available origin of the fact: original article, repository, official announcement, docs, paper, release, commit, source file, benchmark page or demo.
+3. If the signal comes from Hacker News, include the exact HN discussion URL.
+4. If a key judgment depends on a particular HN comment, link the direct comment permalink whenever possible.
+5. Projects/tools should normally have **2–5 evidence links** spanning HN discussion, primary sources and independent evidence.
+6. Trend or opportunity claims must list the concrete source URLs used to derive the inference. “综合判断” without underlying links is not acceptable.
+7. Mutable facts — dates, points, comments, Stars, prices, versions, benchmark scores, releases, commits, funding, revenue or adoption counts — must be adjacent to the URL supporting that fact.
+8. Prefer specific deep links over homepages: PR/commit/release/source file over repository root; paper page over a search result; changelog/docs over a generic product homepage; direct HN comment over a whole thread when the comment itself matters.
+9. Search result pages are discovery aids, not evidence. A secondary article must not replace an available primary source.
+10. Before writing the report, perform a link-completeness pass. Any formal item missing `Source`, required `HN`, or material `Evidence` links must be fixed or downgraded.
+
 ## Project & tool radar: mandatory
 
 Every run must explicitly inspect HN items that are projects, open-source repositories, developer tools, libraries, utilities, products, infrastructure or unusually concrete demos.
@@ -112,6 +150,25 @@ Do not turn inference into fact. Do not turn one anonymous comment into communit
 
 For time-sensitive claims, verify exact publication/release/commit dates so resurfaced old material is not reported as new.
 
+## Evidence Registry
+
+The report should end with a compact registry so links remain easy to audit and reuse.
+
+Recommended format:
+
+```markdown
+## Evidence Registry
+
+| ID | Type | Source | Supports |
+| --- | --- | --- | --- |
+| E-001 | primary | https://... | S-001 release facts |
+| E-002 | hn-discussion | https://news.ycombinator.com/item?id=... | S-001 discussion signal |
+| E-003 | hn-comment | https://news.ycombinator.com/item?id=... | S-001 counterexample |
+| E-004 | independent | https://... | S-001 adoption / comparison |
+```
+
+Use stable local IDs where practical (`S-001`, `E-001`, etc.) so later 14:00 / 19:00 updates can refer back to the same signal and evidence instead of duplicating prose.
+
 ## Incremental update rules
 
 At 14:00 and 19:00, read the current day's existing report before researching new material.
@@ -128,6 +185,8 @@ Only add/update a previously covered topic when at least one material change occ
 - new product/business/engineering implication.
 
 Do not repeat the same explanation merely because the thread remains on the front page.
+
+When updating an existing signal, preserve its stable signal ID when possible and add only the new evidence IDs / links that justify the changed conclusion.
 
 ## Research scope
 
@@ -153,6 +212,23 @@ The repository is the complete archive. Chat output after a scheduled run should
 - GitHub commit SHA or write failure.
 
 Do not dump the full report into the conversation unless explicitly asked.
+
+## Pre-write quality gate
+
+Before committing a run, verify all of the following:
+
+- every formal signal has a clickable `Source` URL;
+- every HN-derived formal signal has its HN discussion URL;
+- key-comment-based judgments include direct comment permalinks where available;
+- projects/tools have an adequate evidence chain, normally 2–5 links;
+- trend/opportunity inferences expose the source URLs they depend on;
+- mutable numbers and dates are attached to supporting URLs;
+- author claims, community evidence and inference are not mislabeled as verified facts;
+- resurfaced old material is not presented as a new event;
+- the Evidence Registry contains the sources used by the formal findings;
+- the same time slot is updated idempotently rather than duplicated.
+
+If any hard link gate fails, fix it before write. If it cannot be fixed, downgrade the affected finding rather than publishing it as a strong signal.
 
 ## Quality bar
 
